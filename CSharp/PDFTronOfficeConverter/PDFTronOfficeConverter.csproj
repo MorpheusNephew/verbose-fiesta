@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PDFTron.NETCore.Windows.x64" Version="7.1.0.74119" />
+  </ItemGroup>
+
 </Project>
