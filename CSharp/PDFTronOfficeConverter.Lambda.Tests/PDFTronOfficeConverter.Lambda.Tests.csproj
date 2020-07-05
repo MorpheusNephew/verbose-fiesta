@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
@@ -11,5 +11,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PDFTronOfficeConverter.Lambda\PDFTronOfficeConverter.Lambda.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Resources\Report.docx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,28 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Xunit;
-using Amazon.Lambda.Core;
 using Amazon.Lambda.TestUtilities;
-
-using PDFTronOfficeConverter.Lambda;
+using pdftron.Filters;
+using System.IO;
+using Xunit;
 
 namespace PDFTronOfficeConverter.Lambda.Tests
 {
     public class FunctionTest
     {
         [Fact]
-        public void TestToUpperFunction()
+        public void TestConvertToPDFFunction()
         {
+            var filePath = Path.Join("Resources", "Report.docx");
 
-            // Invoke the lambda function and confirm the string was upper cased.
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException();
+            }
+
+            var mappedFile = new MappedFile(filePath);
+
+            // Invoke the lambda function and confirm the stream
             var function = new Function();
             var context = new TestLambdaContext();
-            var upperCase = function.FunctionHandler("hello world", context);
 
-            Assert.Equal("HELLO WORLD", upperCase);
+            var stream = function.FunctionHandler(mappedFile, context);
+
+            Assert.True(stream.Length > 0);
         }
     }
 }
