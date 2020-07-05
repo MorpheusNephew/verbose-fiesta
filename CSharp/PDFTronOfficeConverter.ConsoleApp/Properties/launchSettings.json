@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PDFTronOfficeConverter.ConsoleApp": {
+      "commandName": "Project",
+      "commandLineArgs": "c:\\users\\14076\\downloads\\Report.docx"
+    }
+  }
+}
