@@ -1,0 +1,116 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Localstack",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": [
+                "up"
+            ]
+        },
+        {
+            "label": "Build Lambda",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "-c",
+                "release",
+                "PDFTronOfficeConverter.Lambda\\PDFTronOfficeConverter.Lambda.csproj"
+            ]
+        },
+        {
+            "label": "Zip Lambda",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "-m",
+                "zipfile",
+                "-c",
+                "${workspaceFolder}\\lambda.zip",
+                "."
+            ],
+            "options": {
+                "cwd": "PDFTronOfficeConverter.Lambda\\bin\\Release\\netcoreapp3.1\\"
+            },
+            "dependsOn": [
+                "Build Lambda"
+            ]
+        },
+        {
+            "label": "Upload lambda to S3",
+            "type": "shell",
+            "command": "aws",
+            "args": [
+                "--endpoint-url",
+                "http://localhost:4566",
+                "s3",
+                "cp",
+                "lambda.zip",
+                "s3://convertertronbucket"
+            ],
+            "dependsOn": [
+                "Zip Lambda"
+            ]
+        },
+        {
+            "label": "Create Lambda Function",
+            "type": "shell",
+            "command": "aws",
+            "args": [
+                "lambda",
+                "create-function",
+                "--endpoint-url",
+                "http://localhost:4566",
+                "--function-name",
+                "ConverterTron",
+                "--runtime",
+                "dotnetcore3.1",
+                "--role",
+                "fake-role",
+                "--handler",
+                "PDFTronOfficeConverter.Lambda::PDFTronOfficeConverter.Lambda.Function::FunctionHandler",
+                "--code",
+                "S3Bucket=convertertronbucket,S3Key=lambda.zip"
+            ],
+            "dependsOn": [
+                "Upload lambda to S3"
+            ]
+        },
+        {
+            "label": "Update Lambda Function",
+            "type": "shell",
+            "command": "aws",
+            "args": [
+                "lambda",
+                "update-function-code",
+                "--endpoint-url",
+                "http://localhost:4566",
+                "--function-name",
+                "ConverterTron",
+                "--s3-bucket",
+                "convertertronbucket",
+                "--s3-key",
+                "lambda.zip"
+            ],
+            "dependsOn": [
+                "Upload lambda to S3"
+            ]
+        },
+        {
+            "label": "Create S3",
+            "type": "shell",
+            "command": "aws",
+            "args": [
+                "--endpoint-url",
+                "http://localhost:4566",
+                "s3",
+                "mb",
+                "s3://ConverterTronBucket"
+            ]
+        }
+    ]
+}
