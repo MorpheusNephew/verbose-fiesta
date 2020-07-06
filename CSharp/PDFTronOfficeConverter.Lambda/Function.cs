@@ -1,4 +1,5 @@
 using Amazon.Lambda.Core;
+using pdftron;
 using pdftron.Filters;
 using System.IO;
 
@@ -9,14 +10,18 @@ namespace PDFTronOfficeConverter.Lambda
 {
     public class Function
     {
-        
+        public Function()
+        {
+            PDFNet.Initialize();
+        }
+
         /// <summary>
         /// A simple function that takes a string and does a ToUpper
         /// </summary>
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Stream FunctionHandler(MappedFile input, ILambdaContext context)
+        public Stream FunctionHandler(FilterReader input, ILambdaContext context)
         {
             return OfficeConverter.ConvertToPDF(input);
         }

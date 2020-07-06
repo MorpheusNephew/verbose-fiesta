@@ -10,6 +10,7 @@ namespace PDFTronOfficeConverter.Lambda.Tests
         [Fact]
         public void TestConvertToPDFFunction()
         {
+            pdftron.PDFNet.Initialize();
             var filePath = Path.Join("Resources", "Report.docx");
 
             if (!File.Exists(filePath))
@@ -18,12 +19,13 @@ namespace PDFTronOfficeConverter.Lambda.Tests
             }
 
             var mappedFile = new MappedFile(filePath);
+            var filterReader = new FilterReader(mappedFile);
 
             // Invoke the lambda function and confirm the stream
             var function = new Function();
             var context = new TestLambdaContext();
 
-            var stream = function.FunctionHandler(mappedFile, context);
+            var stream = function.FunctionHandler(filterReader, context);
 
             Assert.True(stream.Length > 0);
         }

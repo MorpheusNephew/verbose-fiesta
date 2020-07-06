@@ -24,9 +24,10 @@ namespace PDFTronOfficeConverter.ConsoleApp
             var fileWithoutExtension = Path.GetFileNameWithoutExtension(inputFilePath);
             var outputFilePath = Path.Combine(fileDirectory, $"{fileWithoutExtension}.pdf");
 
-            using var mappedFileStream = new MappedFile(inputFilePath);
+            using var mappedFile = new MappedFile(inputFilePath);
+            using var filterReader = new FilterReader(mappedFile);
 
-            using var stream = OfficeConverter.ConvertToPDF(mappedFileStream);
+            using var stream = OfficeConverter.ConvertToPDF(filterReader);
 
             using var outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write);
 

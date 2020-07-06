@@ -7,11 +7,11 @@ namespace PDFTronOfficeConverter
 {
     public static class OfficeConverter
     {
-        public static Stream ConvertToPDF(MappedFile mappedFile)
+        public static Stream ConvertToPDF(FilterReader filterReader)
         {
             using var pdfDoc = new PDFDoc();
 
-            Convert.OfficeToPDF(pdfDoc, mappedFile, null);
+            Convert.OfficeToPDF(pdfDoc, filterReader.GetAttachedFilter(), null);
 
             var memoryStream = new MemoryStream();
 
