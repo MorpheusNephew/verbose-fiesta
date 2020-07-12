@@ -1,0 +1,219 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create ConverterTron Stack",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "cloudformation",
+                "create-stack",
+                "--stack-name",
+                "ConverterTronStack",
+                "--template-body",
+                "file://${workspaceFolder}\\ConverterTronCf.yaml",
+            ],
+            "dependsOn": ["Upload lambda to S3"]
+        },
+        {
+            "label": "Zip Lambda",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "lambda",
+                "package",
+                "${workspaceFolder}\\lambda.zip",
+                "--region",
+                "us-east-1",
+                "-c",
+                "release",
+                "-f",
+                "netcoreapp3.1",
+                "--msbuild-parameters",
+                "/p:GenerateRuntimeConfigurationFiles=true"
+            ],
+            "options": {
+                "cwd": "PDFTronOfficeConverter.Lambda"
+            }
+        },
+        {
+            "label": "Upload lambda to S3",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "s3",
+                "cp",
+                "lambda.zip",
+                "s3://jj-lambda-assets"
+            ],
+            "dependsOn": [
+                "Zip Lambda"
+            ]
+        },
+        {
+            "label": "Create Lambda Function",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "lambda",
+                "create-function",
+                "--function-name",
+                "ConverterTron",
+                "--runtime",
+                "dotnetcore3.1",
+                "--role",
+                "fake-role",
+                "--handler",
+                "PDFTronOfficeConverter.Lambda::PDFTronOfficeConverter.Lambda.Function::FunctionHandler",
+                "--code",
+                "S3Bucket=convertertronbucket,S3Key=lambda.zip",
+                "--environment",
+                "Variables='{LD_LIBRARY_PATH=lib:$LD_LIBRARY_PATH}'"
+            ],
+            "dependsOn": [
+                "Upload lambda to S3"
+            ]
+        },
+        {
+            "label": "Create Rest API",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "apigateway",
+                "create-rest-api",
+                "--name",
+                "ConverterTron API",
+                "--description",
+                "API Gateway for ConverterTron",
+                "--region",
+                "us-east-1"
+            ]
+        },
+        {
+            "label": "Create Convert Resource",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "apigateway",
+                "--region",
+                "us-east-1",
+                "create-resource",
+                "--rest-api-id",
+                "bzgl3oxp5d",
+                "--parent-id",
+                "7e9mu3ojqm",
+                "--path-part",
+                "convert"
+            ]
+        },
+        {
+            "label": "Create Convert Method",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "apigateway",
+                "--region",
+                "us-east-1",
+                "put-method",
+                "--rest-api-id",
+                "bzgl3oxp5d",
+                "--resource-id",
+                "f61zz69l97",
+                "--http-method",
+                "POST",
+                "--authorization-type",
+                "NONE"
+            ]
+        },
+        {
+            "label": "Create Convert Method Integration",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "apigateway",
+                "--region",
+                "us-east-1",
+                "put-integration",
+                "--rest-api-id",
+                "bzgl3oxp5d",
+                "--resource-id",
+                "f61zz69l97",
+                "--http-method",
+                "POST",
+                "--type",
+                "AWS_PROXY",
+                "--integration-http-method",
+                "POST",
+                "--uri",
+                "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:ConverterTron/invocations"
+            ]
+        },
+        {
+            "label": "Publish Conversion Endpoint",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "apigateway",
+                "--region",
+                "us-east-1",
+                "create-deployment",
+                "--rest-api-id",
+                "bzgl3oxp5d",
+                "--stage-name",
+                "v1"
+            ]
+        },
+        {
+            "label": "Update Lambda Function",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "lambda",
+                "update-function-code",
+                "--endpoint-url",
+                "http://localhost:4566",
+                "--function-name",
+                "ConverterTronStack-ConverterTronLambda-V6ZBU97Z5XM0",
+                "--s3-bucket",
+                "convertertronbucket",
+                "--s3-key",
+                "lambda.zip"
+            ],
+            "dependsOn": [
+                "Upload lambda to S3"
+            ]
+        },
+        {
+            "label": "Create S3",
+            "type": "shell",
+            "command": "pipenv",
+            "args": [
+                "run",
+                "awslocal",
+                "s3",
+                "mb",
+                "s3://ConverterTronBucket"
+            ]
+        }
+    ]
+}
