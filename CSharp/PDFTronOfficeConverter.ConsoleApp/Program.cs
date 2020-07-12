@@ -1,5 +1,4 @@
-﻿using pdftron.Filters;
-using System;
+﻿using System;
 using System.IO;
 
 namespace PDFTronOfficeConverter.ConsoleApp
@@ -20,14 +19,13 @@ namespace PDFTronOfficeConverter.ConsoleApp
                 throw new FileNotFoundException();
             }
 
+            using var fileStream = File.OpenRead(inputFilePath);
+
+            using var stream = OfficeConverter.ConvertToPDF(fileStream);
+
             var fileDirectory = Directory.GetParent(inputFilePath).FullName;
             var fileWithoutExtension = Path.GetFileNameWithoutExtension(inputFilePath);
             var outputFilePath = Path.Combine(fileDirectory, $"{fileWithoutExtension}.pdf");
-
-            using var mappedFile = new MappedFile(inputFilePath);
-            using var filterReader = new FilterReader(mappedFile);
-
-            using var stream = OfficeConverter.ConvertToPDF(filterReader);
 
             using var outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write);
 

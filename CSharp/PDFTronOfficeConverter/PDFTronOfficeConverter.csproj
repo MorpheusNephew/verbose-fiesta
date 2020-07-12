@@ -2,7 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="lib\libPDFNetC.so" />
+    <None Remove="lib\libPDFNetC.so.7.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="lib\libPDFNetC.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\libPDFNetC.so.7.1.0">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="PDFTron.NETCore.Windows.x64" Version="7.1.0.74119" />

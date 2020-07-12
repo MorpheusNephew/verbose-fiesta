@@ -1,5 +1,4 @@
 using Amazon.Lambda.TestUtilities;
-using pdftron.Filters;
 using System.IO;
 using Xunit;
 
@@ -18,14 +17,13 @@ namespace PDFTronOfficeConverter.Lambda.Tests
                 throw new FileNotFoundException();
             }
 
-            var mappedFile = new MappedFile(filePath);
-            var filterReader = new FilterReader(mappedFile);
+            using var fileStream = File.OpenRead(filePath);
 
             // Invoke the lambda function and confirm the stream
             var function = new Function();
             var context = new TestLambdaContext();
 
-            var stream = function.FunctionHandler(filterReader, context);
+            var stream = function.FunctionHandler(fileStream, context);
 
             Assert.True(stream.Length > 0);
         }
