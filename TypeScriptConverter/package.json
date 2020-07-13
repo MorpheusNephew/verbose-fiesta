@@ -1,0 +1,23 @@
+{
+  "name": "typescript-converter",
+  "version": "1.0.0",
+  "description": "Converts all of the things",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild",
+    "postBuild": "node ./postbuild.js"
+  },
+  "author": "Jelani Jackson",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.59",
+    "@types/node": "^14.0.22",
+    "fs-extra": "^9.0.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "@pdftron/pdfnet-node": "^7.1.1-1"
+  }
+}
