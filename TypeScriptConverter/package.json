@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild",
-    "postBuild": "node ./postbuild.js"
+    "postBuild": "node ./postbuild.js",
+    "makeS3Bucket": "pipenv run awslocal s3 mb s3://bucket-of-lambdas",
+    "createLambda": "pipenv run awslocal lambda create-function --function-name my-lambda --runtime nodejs12.x --zip-file fileb://lambda.zip --handler index.handler --role fake-role",
+    "buildAndDeployLambda": "npm run postBuild && npm run makeS3Bucket && npm run createLambda",
+    "invokeLambda": "pipenv run awslocal lambda invoke --function-name my-lambda response.json"
   },
   "author": "Jelani Jackson",
   "license": "MIT",
@@ -15,7 +19,8 @@
     "@types/node": "^14.0.22",
     "fs-extra": "^9.0.1",
     "rimraf": "^3.0.2",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "zip-a-folder": "0.0.12"
   },
   "dependencies": {
     "@pdftron/pdfnet-node": "^7.1.1-1"
