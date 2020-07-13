@@ -126,3 +126,6 @@ dist
 
 # Local History for Visual Studio Code
 .history/
+
+# Output from invoking lambda
+response.json
