@@ -8,8 +8,11 @@
     "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild",
     "postBuild": "node ./postbuild.js",
     "makeS3Bucket": "pipenv run awslocal s3 mb s3://bucket-of-lambdas",
-    "createLambda": "pipenv run awslocal lambda create-function --function-name my-lambda --runtime nodejs12.x --zip-file fileb://lambda.zip --handler index.handler --role fake-role",
-    "buildAndDeployLambda": "npm run postBuild && npm run makeS3Bucket && npm run createLambda",
+    "copyToS3Bucket": "pipenv run awslocal s3 cp typescript-lambda.zip s3://bucket-of-lambdas",
+    "createLambda": "pipenv run awslocal lambda create-function --function-name my-lambda --runtime nodejs12.x --code S3Bucket=bucket-of-lambdas,S3Key=typescript-lambda.zip --handler index.handler --role fake-role",
+    "updateLambda": "pipenv run awslocal lambda update-function-code --function-name my-lambda --s3-bucket bucket-of-lambdas --s3-key typescript-lambda.zip",
+    "buildAndDeployLambda": "npm run build && npm run makeS3Bucket && npm run copyToS3Bucket && npm run createLambda",
+    "buildAndUpdateLambda": "npm run build && npm run copyToS3Bucket && npm run updateLambda",
     "invokeLambda": "pipenv run awslocal lambda invoke --function-name my-lambda response.json"
   },
   "author": "Jelani Jackson",
@@ -17,8 +20,10 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.59",
     "@types/node": "^14.0.22",
+    "aws-sdk": "^2.713.0",
     "fs-extra": "^9.0.1",
     "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.6",
     "zip-a-folder": "0.0.12"
   },
