@@ -1,16 +1,23 @@
-import { PDFNet } from "@pdftron/pdfnet-node";
+import express from 'express';
+import multer from 'multer';
+import { convertToPdf } from "./converter";
 
-const handler = async function (payload, context) {
-  return convertToPdf(payload);
-};
+var app = express();
 
-const convertToPdf = async function (buffer) {
-  await PDFNet.initialize();
+app.get('/', (_, res) => {
+  res.json("Hello World!!!");
+});
 
-  var Convert = PDFNet.Convert;
-  const doc = await Convert.office2PDF(buffer);
+const storage = multer.memoryStorage();
+const upload = multer({storage});
 
-  return doc.saveMemoryBuffer(PDFNet.SDFDoc.SaveOptions.e_linearized);
-};
+app.post("/", upload.single('officeFile'), async (req, res) => {
+  const convertedPdfBytes = await convertToPdf(req.file.buffer);
+  res.send(convertedPdfBytes);
+});
 
-export { handler };
+const port = 3000;
+
+app.listen(port, () => {
+  console.log("You are now listening DJ Such and Such at", `http://localhost:${port}`);
+});
