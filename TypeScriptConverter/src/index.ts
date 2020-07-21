@@ -20,5 +20,5 @@ const port = 8080;
 const host = '0.0.0.0';
 
 app.listen(port, host, () => {
-  console.log("You are now listening DJ Such and Such at", `http://${host}:${port}`);
+  console.log(`Listening at http://${host}:${port}`);
 });
