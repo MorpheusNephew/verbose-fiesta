@@ -16,8 +16,9 @@ app.post("/", upload.single('officeFile'), async (req, res) => {
   res.send(convertedPdfBytes);
 });
 
-const port = 3000;
+const port = 8080;
+const host = '0.0.0.0';
 
-app.listen(port, () => {
-  console.log("You are now listening DJ Such and Such at", `http://localhost:${port}`);
+app.listen(port, host, () => {
+  console.log("You are now listening DJ Such and Such at", `http://${host}:${port}`);
 });
