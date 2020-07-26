@@ -1,20 +1,25 @@
-import express from 'express';
-import multer from 'multer';
-import { isNil } from 'lodash';
+import express from "express";
+import multer from "multer";
+import cors from "cors";
+import { isNil } from "lodash";
 import { convertToPdf } from "./converter";
 
-var app = express();
+const app = express();
 
-app.get('/', (_, res) => {
+app.use(cors());
+
+app.get("/", (_, res) => {
   res.json("Hello World!!!");
 });
 
 const storage = multer.memoryStorage();
-const upload = multer({storage});
+const upload = multer({ storage });
 
-app.post("/", upload.single('officeFile'), async (req, res) => {
+app.post("/", upload.single("officeFile"), async (req, res) => {
   if (isNil(req.file?.buffer)) {
-    res.sendStatus(400).send("File with form name officeFile was not submitted");
+    res
+      .sendStatus(400)
+      .send("File with form name officeFile was not found.");
   }
 
   const convertedPdfBytes = await convertToPdf(req.file.buffer);
@@ -22,7 +27,7 @@ app.post("/", upload.single('officeFile'), async (req, res) => {
 });
 
 const port = 8080;
-const host = '0.0.0.0';
+const host = "0.0.0.0";
 
 app.listen(port, host, () => {
   console.log(`Listening at http://${host}:${port}`);
