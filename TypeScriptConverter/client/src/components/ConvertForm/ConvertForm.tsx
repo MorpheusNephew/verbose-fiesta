@@ -30,7 +30,7 @@ const submitFile = async (file?: any) => {
   formData.append("officeFile", file);
 
   const response = await axios.post("http://localhost:3030", formData, {
-    responseType: "blob"
+    responseType: "blob",
   });
 
   const convertedPdfName = `${path.basename(
@@ -38,7 +38,14 @@ const submitFile = async (file?: any) => {
     path.extname(file.name)
   )}.pdf`;
 
-  const url = window.URL.createObjectURL(new Blob([response.data]));
+  downloadConvertedFile(convertedPdfName, response.data);
+};
+
+const downloadConvertedFile = (
+  convertedPdfName: string,
+  convertedFile: Blob
+) => {
+  const url = window.URL.createObjectURL(new Blob([convertedFile]));
   const link = document.createElement("a");
   link.href = url;
   link.setAttribute("download", convertedPdfName); //or any other extension
@@ -53,7 +60,7 @@ const ConvertForm = () => {
   const [fileToUpload, setFileToUpload] = useState(null);
 
   return (
-    <form className={classes.form} action="http://localhost:3000" method="POST">
+    <form className={classes.form}>
       <FormControl>
         <InputLabel>File to upload:</InputLabel>
         <Input
