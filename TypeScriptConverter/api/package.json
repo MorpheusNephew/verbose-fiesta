@@ -8,7 +8,8 @@
     "start": "./node_modules/.bin/ts-node-dev ./src/index.ts",
     "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild && npm run buildImage",
     "postBuild": "node ./postbuild.js",
-    "buildImage": "docker build --pull --rm -f \"Dockerfile\" -t typescriptconverter \".\""
+    "buildImage": "docker build --pull --rm -f \"Dockerfile\" -t typescriptconverter \".\"",
+    "startContainer": "docker run --rm -dp 3030:8080 typescriptconverter"
   },
   "author": "Jelani Jackson",
   "license": "MIT",
