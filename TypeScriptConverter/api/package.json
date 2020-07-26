@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/ts-node-dev ./src/index.ts",
-    "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild",
-    "postBuild": "node ./postbuild.js"
+    "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild && npm run buildImage",
+    "postBuild": "node ./postbuild.js",
+    "buildImage": "docker build --pull --rm -f \"Dockerfile\" -t typescriptconverter \".\""
   },
   "author": "Jelani Jackson",
   "license": "MIT",
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "@pdftron/pdfnet-node": "^7.1.1-1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "lodash": "^4.17.19",
     "multer": "^1.4.2"
