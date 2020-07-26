@@ -1,10 +1,27 @@
-import React from 'react';
+import React from "react";
+import "./App.css";
+import { makeStyles } from "@material-ui/core/styles";
+import { Container } from "@material-ui/core";
+import { Header, ConvertForm } from "./components";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+  },
+}));
 
 function App() {
+  const classes = useStyles();
+
   return (
-    <div>
-      Hello World!!!
-    </div>
+    <>
+      <Header />
+      <Container className={classes.container}>
+        <ConvertForm />
+      </Container>
+    </>
   );
 }
 
