@@ -26,12 +26,7 @@ const getFileToUpload = (e: any, setFileToUpload: any) => {
 const submitFile = async (file?: any) => {
   if (!file) return;
 
-  const formData = new FormData();
-  formData.append("officeFile", file);
-
-  const response = await axios.post("http://localhost:3030", formData, {
-    responseType: "blob",
-  });
+  const response = await convertFile(file);
 
   const convertedPdfName = `${path.basename(
     file.name,
@@ -41,6 +36,15 @@ const submitFile = async (file?: any) => {
   downloadConvertedFile(convertedPdfName, response.data);
 };
 
+const convertFile = async (file: any) => {
+  const formData = new FormData();
+  formData.append("officeFile", file);
+
+  return await axios.post("http://localhost:3333", formData, {
+    responseType: "blob",
+  });
+};
+
 const downloadConvertedFile = (
   convertedPdfName: string,
   convertedFile: Blob
@@ -48,19 +52,29 @@ const downloadConvertedFile = (
   const url = window.URL.createObjectURL(new Blob([convertedFile]));
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", convertedPdfName); //or any other extension
+  link.setAttribute("download", convertedPdfName);
   document.body.appendChild(link);
   link.click();
   link.remove();
 };
 
+const handleOnSubmit = (e: any, fileToUpload: any, formRef: any) => {
+  e.preventDefault();
+  submitFile(fileToUpload);
+  formRef.reset();
+};
+
 const ConvertForm = () => {
   const classes = useStyles();
-
   const [fileToUpload, setFileToUpload] = useState(null);
+  let formRef: any = null;
 
   return (
-    <form className={classes.form}>
+    <form
+      ref={(ref) => formRef = ref}
+      className={classes.form}
+      onSubmit={(e) => handleOnSubmit(e, fileToUpload, formRef)}
+    >
       <FormControl>
         <InputLabel>File to upload:</InputLabel>
         <Input
@@ -70,18 +84,11 @@ const ConvertForm = () => {
           onChange={(e) => {
             getFileToUpload(e, setFileToUpload);
           }}
+          required
         />
         <FormHelperText></FormHelperText>
       </FormControl>
-      <Button
-        type="submit"
-        onClick={(e) => {
-          e.preventDefault();
-          submitFile(fileToUpload);
-        }}
-      >
-        Submit
-      </Button>
+      <Button type="submit">Submit</Button>
     </form>
   );
 };
