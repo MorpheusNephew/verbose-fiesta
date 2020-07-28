@@ -1,0 +1,15 @@
+{
+  "name": "typescriptconverterapp",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "buildClient": "cd client && npm run build",
+    "buildApi": "cd api && npm run build",
+    "buildAll": "npm run buildClient && npm run buildApi",
+    "composeAll": "npm run buildAll && docker-compose up",
+    "composeAllWithBuild": "npm run buildAll && docker-compose up --build"
+  },
+  "author": "Jelani Jackson",
+  "license": "MIT"
+}
