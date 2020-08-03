@@ -17,13 +17,11 @@ const upload = multer({ storage });
 
 app.post("/", upload.single("officeFile"), async (req, res) => {
   if (isNil(req.file?.buffer)) {
-    res
-      .sendStatus(400)
-      .send("File with form name officeFile was not found.");
+    res.sendStatus(400).send("File with form name officeFile was not found.");
+  } else {
+    const convertedPdfBytes = await convertToPdf(req.file.buffer);
+    res.send(convertedPdfBytes);
   }
-
-  const convertedPdfBytes = await convertToPdf(req.file.buffer);
-  res.send(convertedPdfBytes);
 });
 
 const port = 3333;
