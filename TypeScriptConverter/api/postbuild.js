@@ -6,4 +6,4 @@ const prependCurrentDir = (filePath) => {
 }
 
 fs.copySync(prependCurrentDir('package.json'), prependCurrentDir('build/package.json'));
-fs.copySync(prependCurrentDir('package-lock.json'), prependCurrentDir('build/package-lock.json'));
+fs.copySync(prependCurrentDir('yarn.lock'), prependCurrentDir('build/yarn.lock'));
