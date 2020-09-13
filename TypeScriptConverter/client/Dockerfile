@@ -4,9 +4,9 @@ WORKDIR /usr/src/app
 
 COPY ./build/ .
 
-RUN npm install
+RUN yarn install
 
-RUN npm install -g serve
+RUN yarn install -g serve
 
 EXPOSE 8080
 
