@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY ./build/ .
 
-RUN npm install
+RUN yarn install
 
 EXPOSE 3333
 
