@@ -6,15 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/ts-node-dev ./src/index.ts",
-    "build": "./node_modules/.bin/rimraf ./build/ && tsc && npm run postBuild",
+    "build": "./node_modules/.bin/rimraf ./build/ && tsc && yarn run postBuild",
     "postBuild": "node ./postbuild.js",
-    "buildImage": "npm run build && docker build --pull --rm -f \"Dockerfile\" -t typescriptconverter \".\"",
+    "buildImage": "yarn run build && docker build --pull --rm -f \"Dockerfile\" -t typescriptconverter \".\"",
     "startContainer": "docker run --rm -dp 3030:8080 typescriptconverter"
   },
   "author": "Jelani Jackson",
   "license": "MIT",
   "devDependencies": {
+    "@types/cors": "^2.8.7",
     "@types/express": "^4.17.7",
+    "@types/koa": "^2.11.4",
+    "@types/koa-json": "^2.0.18",
+    "@types/koa__cors": "^3.0.1",
+    "@types/koa__multer": "^2.0.1",
+    "@types/koa__router": "^8.0.2",
     "@types/lodash": "^4.14.157",
     "@types/multer": "^1.4.3",
     "@types/node": "^14.0.22",
@@ -25,9 +31,14 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/multer": "^3.0.0",
+    "@koa/router": "^9.4.0",
     "@pdftron/pdfnet-node": "^7.1.1-1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "koa": "^2.13.0",
+    "koa-json": "^2.0.2",
     "lodash": "^4.17.19",
     "multer": "^1.4.2"
   }
