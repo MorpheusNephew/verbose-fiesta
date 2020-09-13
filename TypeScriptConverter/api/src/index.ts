@@ -1,32 +1,17 @@
-import express from "express";
-import multer from "multer";
-import cors from "cors";
-import { isNil } from "lodash";
-import { convertToPdf } from "./converter";
+import Koa from "koa";
+import cors from "@koa/cors";
+import json from "koa-json";
 
-const app = express();
+import router from "./routes";
 
-app.use(cors());
+const koa = new Koa();
 
-app.get("/", (_, res) => {
-  res.json("Hello World!!!");
-});
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-app.post("/", upload.single("officeFile"), async (req, res) => {
-  if (isNil(req.file?.buffer)) {
-    res.sendStatus(400).send("File with form name officeFile was not found.");
-  } else {
-    const convertedPdfBytes = await convertToPdf(req.file.buffer);
-    res.send(convertedPdfBytes);
-  }
-});
+koa.use(cors());
+koa.use(json());
+koa.use(router.routes());
 
 const port = 3333;
-const host = "0.0.0.0";
 
-app.listen(port, host, () => {
-  console.log(`Listening at http://${host}:${port}`);
-});
+koa.listen(port);
+
+console.log(`Service currently running on port ${port}`);
