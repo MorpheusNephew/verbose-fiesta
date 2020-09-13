@@ -6,7 +6,7 @@ COPY ./build/ .
 
 RUN yarn install
 
-RUN yarn install -g serve
+RUN yarn global add serve
 
 EXPOSE 8080
 
