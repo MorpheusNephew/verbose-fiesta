@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "buildClient": "cd client && yarn run build",
-    "buildApi": "cd api && yarn run build",
+    "buildClient": "cd client && yarn && yarn run build",
+    "buildApi": "cd api && yarn && yarn run build",
     "buildAll": "yarn run buildClient && yarn run buildApi",
     "composeAll": "yarn run buildAll && docker-compose up",
     "composeAllWithBuild": "yarn run buildAll && docker-compose up --build"
