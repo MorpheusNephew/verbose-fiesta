@@ -15,8 +15,7 @@ router.get("/", (ctx) => {
 
 router.post("/", upload.single("officeFile"), async (ctx) => {
   if (isNil(ctx.file?.buffer)) {
-    ctx.status = 400;
-    ctx.body = "File with form name officeFile was not found.";
+    ctx.throw(400, "File with form name officeFile was not found.");
   } else {
     const convertedPdfBytes = await convertToPdf(ctx.file.buffer);
 
